@@ -1,5 +1,7 @@
 package tech.one.place.model;
 
+import com.fasterxml.jackson.annotation.JsonBackReference;
+import com.fasterxml.jackson.annotation.JsonIgnore;
 import jakarta.persistence.*;
 import lombok.Data;
 
@@ -17,6 +19,9 @@ public class Seat implements Serializable{
     private String reference;
 
     @ManyToOne
-    @JoinColumn(name = "idRoom")
+    @JoinColumn(name = "idRoom", referencedColumnName = "id")
+    @JsonIgnore
+
     private Room room;
+
 }
