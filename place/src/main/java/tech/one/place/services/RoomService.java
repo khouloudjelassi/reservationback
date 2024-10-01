@@ -46,7 +46,7 @@ public Room registerRoom(Room registerRoom) {
         for (int i = 1; i <= room.getCapacity(); i++) {
             Seat seat = new Seat();
             seat.setName("Seat" + i);
-            seat.setReference("Seat" + i);
+            seat.setReference("Seat_" + room.getDepartment() + i );
             seat.setRoom(room);
             seats.add(seat);
         }
