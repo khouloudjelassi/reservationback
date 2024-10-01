@@ -1,5 +1,8 @@
 package tech.one.place.controllers;
+import tech.one.place.Dto.RoomDTO;
+import tech.one.place.Dto.SeatDTO;
 import tech.one.place.model.Room;
+import tech.one.place.model.Seat;
 import tech.one.place.services.RoomService;
 import jakarta.validation.Valid;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -25,11 +28,16 @@ public class RoomController {
         return ResponseEntity.ok(rooms);
     }
     @GetMapping("/{roomID}")
-    public ResponseEntity<Room> getInfoById(@PathVariable("roomID") int Id){
-        Room room = new Room();
-        room = roomService.getRoomInfo(Id);
-        return new ResponseEntity<>(room, HttpStatus.OK);
+    public ResponseEntity<RoomDTO> getInfoById(@PathVariable("roomID") long id) {
+        RoomDTO roomDto = roomService.getRoomInfos(id);
+
+        if (roomDto == null) {
+            return new ResponseEntity<>(HttpStatus.NOT_FOUND);
+        }
+
+        return new ResponseEntity<>(roomDto, HttpStatus.OK);
     }
+
     @DeleteMapping ("/{roomID}")
     public ResponseEntity<String> deleteRoomDetails(@PathVariable("roomID") int roomID){
         this.roomService.deleteRoom(roomID);
@@ -41,5 +49,11 @@ public class RoomController {
         HashMap<String, Object> response = new HashMap<>();
         response.put("message", "Room updated successfully");
         return new ResponseEntity<>(response, HttpStatus.OK);
+    }
+
+    @GetMapping("/seats/{roomID}")
+    public ResponseEntity<List<Seat>> getAllSeatsByRoom(@PathVariable("roomID") int Id){
+        List<Seat> seats =  this.roomService.getseatsByRoomId(Id);
+        return new ResponseEntity<>( seats,HttpStatus.OK);
     }
 }

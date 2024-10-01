@@ -1,6 +1,8 @@
 package tech.one.place.services;
 import jakarta.persistence.EntityNotFoundException;
 import jakarta.transaction.Transactional;
+import tech.one.place.Dto.RoomDTO;
+import tech.one.place.Dto.SeatDTO;
 import tech.one.place.model.Room;
 import tech.one.place.model.Seat;
 import tech.one.place.repositories.RoomRepository;
@@ -9,6 +11,8 @@ import tech.one.place.repositories.SeatRepository;
 
 import java.util.ArrayList;
 import java.util.List;
+import java.util.stream.Collectors;
+
 @Service
 public class RoomService {
     private final RoomRepository roomRepo;
@@ -38,7 +42,6 @@ public Room registerRoom(Room registerRoom) {
 
     Room registeredRoom = roomRepo.save(room);
 
-    // Create and save seats
     createSeats(registeredRoom);
 
     return registeredRoom;
@@ -53,15 +56,29 @@ public Room registerRoom(Room registerRoom) {
             seat.setRoom(room);
             seats.add(seat);
         }
-        seatRepo.saveAll(seats); // Save all seats at once
+        seatRepo.saveAll(seats);
     }
     public List<Room> getAllRooms() {
         return roomRepo.findAll();
     }
 
-    public Room getRoomInfo(long Id){
-        return roomRepo.findById(Id).orElse(null);
+//    public Room getRoomInfo(long Id){
+//        return roomRepo.findById(Id).orElse(null);
+//    }
+
+    public RoomDTO getRoomInfos(long id) {
+        Room room = roomRepo.findById(id).orElse(null);
+        if (room == null) return null;
+
+        RoomDTO dto = new RoomDTO();
+        dto.setId(room.getId());
+        dto.setName(room.getName());
+        dto.setSeats(room.getSeats().stream()
+                .map(seat -> new SeatDTO(seat.getId(), seat.getName(), seat.getReference()))
+                .collect(Collectors.toList()));
+        return dto;
     }
+
 
     public void deleteRoom(long id) {
         Room room = roomRepo.findById(id).orElseThrow(() -> new EntityNotFoundException("Room not found"));
@@ -71,8 +88,15 @@ public Room registerRoom(Room registerRoom) {
     }
     public Room updateRoom(long Id, Room room){
         Room exroom = roomRepo.findById(Id).get();
+        exroom.setName(room.getName());
         exroom.setStatus(room.getStatus());
         exroom.setCapacity(room.getCapacity());
         return roomRepo.save(exroom);
+    }
+
+    public List<Seat> getseatsByRoomId(long roomId) {
+        Room room = roomRepo.findById(roomId).orElse(null);
+        if (room == null) return null;
+        return room.getSeats();
     }
 }
