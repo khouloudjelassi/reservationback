@@ -86,12 +86,46 @@ public Room registerRoom(Room registerRoom) {
         seatRepo.deleteAll(seats);
         roomRepo.delete(room);
     }
-    public Room updateRoom(long Id, Room room){
-        Room exroom = roomRepo.findById(Id).get();
-        exroom.setName(room.getName());
-        exroom.setStatus(room.getStatus());
-        exroom.setCapacity(room.getCapacity());
-        return roomRepo.save(exroom);
+//    public Room updateRoom(long Id, Room room){
+//        Room exroom = roomRepo.findById(Id).get();
+//        exroom.setName(room.getName());
+//        exroom.setStatus(room.getStatus());
+//        exroom.setCapacity(room.getCapacity());
+//        return roomRepo.save(exroom);
+//    }
+
+    public Room updateRoom(long id, Room room) {
+        Room existingRoom = roomRepo.findById(id).orElse(null);
+
+        existingRoom.setName(room.getName());
+        existingRoom.setStatus(room.getStatus());
+        existingRoom.setCapacity(room.getCapacity());
+
+        // Update seats based on the new capacity
+        adjustSeats(existingRoom, room.getCapacity());
+
+        return roomRepo.save(existingRoom);
+    }
+
+    private void adjustSeats(Room room, int newCapacity) {
+        List<Seat> currentSeats = room.getSeats();
+
+        if (newCapacity < currentSeats.size()) {
+            for (int i = currentSeats.size() - 1; i >= newCapacity; i--) {
+                seatRepo.delete(currentSeats.get(i));
+                currentSeats.remove(i);
+            }
+        }
+
+        for (int i = currentSeats.size() + 1; i <= newCapacity; i++) {
+            Seat seat = new Seat();
+            seat.setName("Seat" + i);
+            seat.setReference("Seat_" + room.getDepartment() + i);
+            seat.setRoom(room);
+            currentSeats.add(seat); 
+        }
+
+        seatRepo.saveAll(currentSeats);
     }
 
     public List<Seat> getseatsByRoomId(long roomId) {
