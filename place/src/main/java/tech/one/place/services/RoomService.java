@@ -122,7 +122,7 @@ public Room registerRoom(Room registerRoom) {
             seat.setName("Seat" + i);
             seat.setReference("Seat_" + room.getDepartment() + i);
             seat.setRoom(room);
-            currentSeats.add(seat); 
+            currentSeats.add(seat);
         }
 
         seatRepo.saveAll(currentSeats);
@@ -132,5 +132,11 @@ public Room registerRoom(Room registerRoom) {
         Room room = roomRepo.findById(roomId).orElse(null);
         if (room == null) return null;
         return room.getSeats();
+    }
+
+    public List<Room> getRoomBydepartment(String department) {
+        List<Room> rooms = roomRepo.getRoomByDepartment( department);
+        if (rooms == null) return null;
+        return rooms;
     }
 }

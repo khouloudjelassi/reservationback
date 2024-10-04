@@ -13,7 +13,7 @@ import java.util.HashMap;
 import java.util.List;
 @RestController
 @RequestMapping("/api/room")
-@CrossOrigin(origins = "http://localhost:4200/")
+@CrossOrigin(origins = "*")
 public class RoomController {
     @Autowired
     private  RoomService roomService;
@@ -55,5 +55,14 @@ public class RoomController {
     public ResponseEntity<List<Seat>> getAllSeatsByRoom(@PathVariable("roomID") int Id){
         List<Seat> seats =  this.roomService.getseatsByRoomId(Id);
         return new ResponseEntity<>( seats,HttpStatus.OK);
+    }
+
+    @GetMapping("/department/{department}")
+    public ResponseEntity<List<Room>> getRoomsByDepartment(@PathVariable String department) {
+        List<Room> rooms = roomService.getRoomBydepartment(department);
+        if (rooms == null || rooms.isEmpty()) {
+            return new ResponseEntity<>(HttpStatus.NO_CONTENT);
+        }
+        return new ResponseEntity<>(rooms, HttpStatus.OK);
     }
 }
