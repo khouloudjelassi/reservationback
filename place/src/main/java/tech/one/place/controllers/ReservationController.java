@@ -1,5 +1,7 @@
 package tech.one.place.controllers;
+import tech.one.place.Dto.ReservationDTO;
 import tech.one.place.model.Reservation;
+import tech.one.place.repositories.ReservationRepository;
 import tech.one.place.services.ReservationService;
 import jakarta.validation.Valid;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -15,6 +17,11 @@ import java.util.List;
 public class ReservationController {
     @Autowired
     ReservationService resService;
+    @Autowired
+    private ReservationRepository reservationRepository;
+    @Autowired
+    private ReservationService reservationService;
+
     @PostMapping
     public ResponseEntity<Object> createReservation(@RequestBody @Valid Reservation res){
         Reservation res1 = resService.crateReservation(res);
@@ -47,5 +54,12 @@ public class ReservationController {
     public ResponseEntity<List<Reservation>> getAllReservationsByDate(@PathVariable("date") String date){
         List<Reservation> reservations = resService.findAllByDate(date);
         return ResponseEntity.ok(reservations);
+    }
+
+    // to check date because we can have a lot of reservations with same seat and user but diff dates
+    @PostMapping("/reserveunreserve")
+    public ResponseEntity<Reservation> reserveUnreserve( @RequestBody ReservationDTO reservation) throws Exception {
+
+        return ResponseEntity.ok(reservationService.reserveUnreserveSeat( reservation.userId(),reservation.seatId(), reservation.reservationDate()));
     }
 }

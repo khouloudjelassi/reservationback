@@ -11,7 +11,9 @@ import tech.one.place.repositories.RoomRepository;
 import tech.one.place.repositories.SeatRepository;
 import tech.one.place.repositories.UserRepository;
 
+import java.time.Instant;
 import java.time.LocalDate;
+import java.time.MonthDay;
 import java.util.Date;
 import java.util.List;
 @Service
@@ -98,4 +100,38 @@ public class ReservationService {
         reservationRepo.deleteById(Id);
         return res;
     }
+    // Reserve Unreserve seat
+    public Reservation reserveUnreserveSeat(long userId, long seatId, Date reservationDate) throws Exception {
+        var seat = seatRepo.findById(seatId);
+        var user = userRepo.findById(userId);
+        //var RESERVATIO = reservationRepo.findReservationByUserAndSeat(reservationDate.getTime());
+        if (seat.isEmpty() || user.isEmpty()) {
+            throw new Exception("Missing arguments: seatId or UserId");
+        }
+        var checkSeatReservedByUser = reservationRepo.findReservationBySeatAndUserAndDate(seat.get(), user.get(), reservationDate);
+        if (checkSeatReservedByUser.isPresent()) {
+            return deleteReservation(checkSeatReservedByUser.get().getId());
+        }
+        var reservationCheckSeat = reservationRepo.findReservationBySeatAndDate(seat.get(), reservationDate); //add date
+        var reservationCheckUser = reservationRepo.findReservationByUserAndDate(user.get(), reservationDate);
+        if (reservationCheckSeat.isPresent()) {
+            throw new Exception("Reservation already exists");
+            //return reservationCheckSeat.get();
+
+        }
+        if (reservationCheckUser.isPresent() && reservationCheckUser.get().getDate().equals(Date.from(Instant.from(MonthDay.now())))) {
+            throw new Exception("You already reserved a seat for this date");
+            //return reservationCheckSeat.get();
+
+        }
+        var reservation = Reservation.builder()
+                .seat(seat.get())
+                .user(user.get())
+                .date(reservationDate)
+                .build();
+        return reservationRepo.save(reservation);
+        //
+
+    }
+
 }
