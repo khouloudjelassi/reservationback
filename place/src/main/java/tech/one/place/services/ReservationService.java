@@ -105,19 +105,21 @@ public class ReservationService {
         var seat = seatRepo.findById(seatId);
         var user = userRepo.findById(userId);
         //var RESERVATIO = reservationRepo.findReservationByUserAndSeat(reservationDate.getTime());
-        if(seat.isEmpty() || user.isEmpty()) {throw new Exception("Missing arguments: seatId or UserId");}
-        var checkSeatReservedByUser = reservationRepo.findReservationBySeatAndUserAndDate(seat.get(),user.get(), reservationDate);
-        if(checkSeatReservedByUser.isPresent()) {
+        if (seat.isEmpty() || user.isEmpty()) {
+            throw new Exception("Missing arguments: seatId or UserId");
+        }
+        var checkSeatReservedByUser = reservationRepo.findReservationBySeatAndUserAndDate(seat.get(), user.get(), reservationDate);
+        if (checkSeatReservedByUser.isPresent()) {
             return deleteReservation(checkSeatReservedByUser.get().getId());
         }
         var reservationCheckSeat = reservationRepo.findReservationBySeatAndDate(seat.get(), reservationDate); //add date
         var reservationCheckUser = reservationRepo.findReservationByUserAndDate(user.get(), reservationDate);
-        if(reservationCheckSeat.isPresent())  {
+        if (reservationCheckSeat.isPresent()) {
             throw new Exception("Reservation already exists");
             //return reservationCheckSeat.get();
 
         }
-        if(reservationCheckUser.isPresent() && reservationCheckUser.get().getDate().equals(Date.from(Instant.from(MonthDay.now()))))  {
+        if (reservationCheckUser.isPresent() && reservationCheckUser.get().getDate().equals(Date.from(Instant.from(MonthDay.now())))) {
             throw new Exception("You already reserved a seat for this date");
             //return reservationCheckSeat.get();
 
@@ -130,7 +132,6 @@ public class ReservationService {
         return reservationRepo.save(reservation);
 
 
-
-
+    }
 
 }
