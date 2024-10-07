@@ -7,7 +7,7 @@ import org.springframework.stereotype.Service;
 import tech.one.place.Dto.SignupRequest;
 import tech.one.place.model.User;
 import tech.one.place.repositories.UserRepository;
-
+/**
 @Service
 public class AuthServiceImpl implements AuthService {
     private final PasswordEncoder passwordEncoder;
@@ -36,3 +36,4 @@ public class AuthServiceImpl implements AuthService {
 
     }
 }
+**/
