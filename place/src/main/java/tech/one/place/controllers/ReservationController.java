@@ -62,4 +62,9 @@ public class ReservationController {
 
         return ResponseEntity.ok(reservationService.reserveUnreserveSeat( reservation.userId(),reservation.seatId(), reservation.reservationDate()));
     }
+@DeleteMapping("/deletereservation")
+public ResponseEntity<String> deleteReservation( @RequestBody ReservationDTO reservation) throws Exception {
+    return ResponseEntity.ok(reservationService.deleteReservation( reservation.userId(),reservation.seatId(), reservation.reservationDate()));
+
+}
 }

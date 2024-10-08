@@ -133,5 +133,22 @@ public class ReservationService {
         //
 
     }
+    // Delete reservation
+    public String deleteReservation(long userId, long seatId, Date reservationDate) throws Exception {
+        var seat = seatRepo.findById(seatId);
+        var user = userRepo.findById(userId);
+        //var RESERVATIO = reservationRepo.findReservationByUserAndSeat(reservationDate.getTime());
+        if (seat.isEmpty() || user.isEmpty()) {
+            throw new Exception("Missing arguments: seatId or UserId");
+        }
+        var checkSeatReservedByUserAndSeatAndDate = reservationRepo.findReservationBySeatAndUserAndDate(seat.get(), user.get(), reservationDate);
+        if (checkSeatReservedByUserAndSeatAndDate.isPresent()) {
+             deleteReservation(checkSeatReservedByUserAndSeatAndDate.get().getId());
+             return "Reservation deleted";
+        }
+        return "No reservation found !!";
 
+
+
+    }
 }
