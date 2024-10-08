@@ -10,7 +10,7 @@ import org.springframework.web.bind.annotation.RestController;
 import tech.one.place.model.User;
 import tech.one.place.services.AuthService;
 import tech.one.place.Dto.SignupRequest;
-
+/**
 @RestController
 @RequestMapping("/signup")
 public class SignupController {
@@ -32,3 +32,4 @@ public class SignupController {
         }
     }
 }
+**/

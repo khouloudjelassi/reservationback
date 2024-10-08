@@ -1,4 +1,4 @@
-package tech.one.place.Configuration;
+package tech.one.place.configuration;
 
 import org.springframework.http.HttpHeaders;
 import org.springframework.http.HttpStatus;
