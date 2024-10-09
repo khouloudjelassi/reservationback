@@ -14,8 +14,11 @@ import tech.one.place.repositories.UserRepository;
 import java.time.Instant;
 import java.time.LocalDate;
 import java.time.MonthDay;
+import java.util.ArrayList;
 import java.util.Date;
 import java.util.List;
+import java.util.Optional;
+
 @Service
 @AllArgsConstructor
 public class ReservationService {
@@ -149,6 +152,11 @@ public class ReservationService {
         return "No reservation found !!";
 
 
+
+    }
+    public List<Reservation> getAllReservationsByUser(long userId){
+        var user = userRepo.findById(userId);
+        return reservationRepo.findAllReservationByUser(user.get());
 
     }
 }

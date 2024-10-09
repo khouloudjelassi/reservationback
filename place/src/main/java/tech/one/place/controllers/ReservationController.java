@@ -67,4 +67,8 @@ public ResponseEntity<String> deleteReservation( @RequestBody ReservationDTO res
     return ResponseEntity.ok(reservationService.deleteReservation( reservation.userId(),reservation.seatId(), reservation.reservationDate()));
 
 }
+@GetMapping("/myreservations/{userId}")
+    public ResponseEntity<?> getReservationsByUser(@PathVariable("userId") Long userId){
+        return ResponseEntity.ok().body(reservationService.getAllReservationsByUser(userId));
+}
 }

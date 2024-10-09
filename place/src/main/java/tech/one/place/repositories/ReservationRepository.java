@@ -23,4 +23,6 @@ public interface ReservationRepository  extends JpaRepository<Reservation, Long>
     Optional<Reservation> findReservationBySeatAndUserAndDate(Seat seat, User user, Date date);
     Optional<Reservation> findReservationByUserAndDate(User user, Date date);
     Optional<Reservation> findReservationBySeatAndDate(Seat seat,Date date);
+    List<Reservation> findAllReservationByUser(User user);
+
 }
